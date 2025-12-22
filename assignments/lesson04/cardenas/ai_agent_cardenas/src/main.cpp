@@ -13,8 +13,10 @@ int main() {
     std::cout << std::endl << agent.sayhello() << std::endl << std::endl;
 
     char new_prompt[1024];
+    std::string history = "Это история прошлых сообшений: \n";
     std::string new_prompt_string;
     int flag = 0;
+    int counter = 0;
 
     while(!std::cin.eof()) {
 
@@ -25,6 +27,18 @@ int main() {
 
         std::cout << "Пользователь: \n";
         std::cin.getline(new_prompt, 1024);
+        counter++;
+
+        history += "сообщение " + std::to_string(counter);
+        history += ": ";
+        history += new_prompt;
+        history += "\n";
+
+        agent.setPrompt(history);
+
+        std::string request = "Запрос: ";
+        agent.setPrompt(request);
+
         new_prompt_string = new_prompt;
         agent.setPrompt(new_prompt_string);
 

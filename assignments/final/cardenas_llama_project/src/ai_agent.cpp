@@ -1,4 +1,4 @@
-#include "AiAgent.h"
+#include "ai_agent.h"
 #include <fstream>
 #include <sstream>
 #include <vector>
@@ -137,14 +137,10 @@ std::optional<std::string> AiAgent::httpsPostGenerate(
     SSL_CTX_free(ctx);
 
     // ----- Используем nlohmann::json для извлечения "text" -----
-
     std::string text = extractTextFromJsonBody(response);
     if (text.empty()) {
         if (err) *err = "Cannot extract \"text\" from JSON response";
-
-        text = "Время ожидания закончилось. Попробуйте ещё раз.";
-
-       // return std::nullopt;
+        return std::nullopt;
     }
     return text;
 }
@@ -164,4 +160,39 @@ std::optional<std::string> AiAgent::ask(std::string* outErr) const {
     const std::string body = payload.dump();
 
     return httpsPostGenerate(cfg_, body, outErr);
+}
+
+bool AiAgent::loadConfigFromJson(const std::string& jsonStr, std::string* err) {
+    try {
+        auto j = nlohmann::json::parse(jsonStr);
+        cfg_.host = j.at("host").get<std::string>();
+        if (j.contains("port")) {
+            cfg_.port = j.at("port").get<std::string>();
+        }
+        if (j.contains("api_key")) {
+            cfg_.api_key = j.at("api_key").get<std::string>();
+        }
+        return true;
+    } catch (const std::exception& e) {
+        if (err) *err = std::string("Config parse error: ") + e.what();
+        return false;
+    }
+}
+
+bool AiAgent::loadPromptFromJson(const std::string& jsonStr, std::string* err) {
+    try {
+        nlohmann::json j = nlohmann::json::parse(jsonStr);
+        if (j.is_string()) {
+            prompt_ = j.get<std::string>();
+        } else if (j.is_object()) {
+            prompt_ = j.at("prompt").get<std::string>();
+        } else {
+            if (err) *err = "Prompt JSON must be string or object with key 'prompt'";
+            return false;
+        }
+        return true;
+    } catch (const std::exception& e) {
+        if (err) *err = std::string("Prompt parse error: ") + e.what();
+        return false;
+    }
 }

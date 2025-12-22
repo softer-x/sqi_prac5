@@ -1,0 +1,20 @@
+# Simple Makefile
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -I.
+LDFLAGS = -lssl -lcrypto
+
+all: ai_client
+
+ai_client: ai_client.o AiAgent.o
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+ai_client.o: ai_client.cpp AiAgent.h
+	$(CXX) $(CXXFLAGS) -c ai_client.cpp
+
+AiAgent.o: AiAgent.cpp AiAgent.h
+	$(CXX) $(CXXFLAGS) -c AiAgent.cpp
+
+clean:
+	rm -f *.o ai_client
+
+.PHONY: all clean
