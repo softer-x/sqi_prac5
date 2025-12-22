@@ -1,0 +1,21 @@
+{
+    "mode": "hurated",
+    "hurated": {
+        "host": "ai-api.hurated.com",
+        "port": "443",
+        "api_key": "924ee41d5b2707ed47c6f3baba7c0ff4"
+    },
+    "local": {
+        "backend": "llama.cpp",
+        "model_path": "/home/softer/projects/music-agent/models/Qwen2.5-0.5B-Instruct-Q6_K.gguf",
+        "llama_cli_path": "/home/softer/projects/music-agent/bin/llama-cli",
+        "context_length": 4096,
+        "threads": 4,
+        "temperature": 0.7
+    },
+    "music": {
+        "yandex_music_token": "y0__xCN0-rQAhje-AYgxof1-BR8g4pX4OJeCPY31w51GSZlI-KW-w",
+        "python_path": "/home/softer/projects/music-agent/music_venv/bin/python3",
+        "music_script_path": "yandex_music_client.py"
+    }
+}
